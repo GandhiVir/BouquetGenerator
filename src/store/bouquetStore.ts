@@ -8,6 +8,7 @@ type BouquetStore = {
   config: BouquetConfig;
   shuffleSeed: number;
   setConfig: (config: BouquetConfig) => void;
+  hydrateShared: (config: BouquetConfig, shuffleSeed: number) => void;
   updateField: <K extends keyof BouquetConfig>(
     field: K,
     value: BouquetConfig[K],
@@ -22,6 +23,7 @@ export const useBouquetStore = create<BouquetStore>((set) => ({
   config: DEFAULT_CONFIG,
   shuffleSeed: 0,
   setConfig: (config) => set({ config }),
+  hydrateShared: (config, shuffleSeed) => set({ config, shuffleSeed }),
   updateField: (field, value) =>
     set((state) => ({
       config: { ...state.config, [field]: value },

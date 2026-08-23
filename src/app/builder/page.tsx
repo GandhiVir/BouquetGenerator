@@ -22,7 +22,7 @@ import {
 import { flattenFlowers, getLayout, shuffleFlowers } from "@/lib/bouquet";
 import { downloadSvgMarkup } from "@/lib/download";
 import { buildBouquetSvgMarkup } from "@/lib/exportSvg";
-import { encodeBouquetConfig } from "@/lib/shareLink";
+import { encodeShareState } from "@/lib/shareLink";
 import { useBouquetStore } from "@/store/bouquetStore";
 import type {
   BouquetSize,
@@ -57,7 +57,7 @@ export default function BuilderPage() {
 
   const handleShare = async () => {
     const url = `${window.location.origin}/result?b=${encodeURIComponent(
-      encodeBouquetConfig(config),
+      encodeShareState(config, shuffleSeed),
     )}`;
 
     if (navigator.share) {
