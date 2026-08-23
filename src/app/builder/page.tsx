@@ -1,8 +1,8 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Download, Flower2, Gift, Palette, RotateCcw, Ruler, Shuffle } from "lucide-react";
+import { Check, Download, Film, Flower2, Gift, Palette, RotateCcw, Ruler, Share, Shuffle } from "lucide-react";
 import { BouquetPreview } from "@/components/bouquet/BouquetPreview";
 import { ColorSwatches } from "@/components/controls/ControlSwatches";
 import { ControlRow } from "@/components/controls/ControlRow";
@@ -20,7 +20,9 @@ import {
   WRAPS,
 } from "@/data/bouquetOptions";
 import { flattenFlowers, getLayout, shuffleFlowers } from "@/lib/bouquet";
-import { downloadSvg } from "@/lib/download";
+import { downloadSvgMarkup } from "@/lib/download";
+import { buildBouquetSvgMarkup } from "@/lib/exportSvg";
+import { encodeBouquetConfig } from "@/lib/shareLink";
 import { useBouquetStore } from "@/store/bouquetStore";
 import type {
   BouquetSize,
@@ -30,9 +32,9 @@ import type {
 } from "@/types/bouquet";
 
 export default function BuilderPage() {
-  const svgRef = useRef<SVGSVGElement | null>(null);
   const { config, updateField, resetConfig, shuffleSeed, reshuffle } =
     useBouquetStore();
+  const [copied, setCopied] = useState(false);
 
   const maxFlowers =
     config.size === "small" ? 8 : config.size === "medium" ? 12 : 18;
@@ -52,6 +54,39 @@ export default function BuilderPage() {
       ),
     [config.size, config.style, config.stemLength, flatFlowers.length, shuffleSeed],
   );
+
+  const handleShare = async () => {
+    const url = `${window.location.origin}/result?b=${encodeURIComponent(
+      encodeBouquetConfig(config),
+    )}`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: "A bouquet for you", url });
+        return;
+      } catch {
+        // user cancelled or share failed — fall through to clipboard copy
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      window.prompt("Copy this link to share your bouquet:", url);
+    }
+  };
+
+  const handleDownloadAnimated = () => {
+    const markup = buildBouquetSvgMarkup(config, flatFlowers, layout, true);
+    downloadSvgMarkup(markup, "digital-bouquet-animated.svg");
+  };
+
+  const handleDownloadStatic = () => {
+    const markup = buildBouquetSvgMarkup(config, flatFlowers, layout, false);
+    downloadSvgMarkup(markup, "digital-bouquet.svg");
+  };
 
   return (
     <motion.main
@@ -189,7 +224,15 @@ export default function BuilderPage() {
                   <RotateCcw className="h-4 w-4" />
                   Reset
                 </button>
-                <button onClick={() => downloadSvg(svgRef.current)} className="inline-flex items-center gap-2 rounded-full bg-stone-900 px-4 py-2 text-sm font-medium text-white hover:bg-stone-800">
+                <button onClick={handleShare} className="inline-flex items-center gap-2 rounded-full border border-stone-200 px-4 py-2 text-sm font-medium hover:bg-stone-50">
+                  {copied ? <Check className="h-4 w-4" /> : <Share className="h-4 w-4" />}
+                  {copied ? "Link copied" : "Share link"}
+                </button>
+                <button onClick={handleDownloadAnimated} className="inline-flex items-center gap-2 rounded-full border border-stone-200 px-4 py-2 text-sm font-medium hover:bg-stone-50">
+                  <Film className="h-4 w-4" />
+                  Animated
+                </button>
+                <button onClick={handleDownloadStatic} className="inline-flex items-center gap-2 rounded-full bg-stone-900 px-4 py-2 text-sm font-medium text-white hover:bg-stone-800">
                   <Download className="h-4 w-4" />
                   Download
                 </button>
@@ -197,7 +240,7 @@ export default function BuilderPage() {
             </div>
 
             <div className="mt-5">
-              <BouquetPreview ref={svgRef} config={config} flatFlowers={flatFlowers} layout={layout} />
+              <BouquetPreview config={config} flatFlowers={flatFlowers} layout={layout} />
             </div>
           </div>
 
