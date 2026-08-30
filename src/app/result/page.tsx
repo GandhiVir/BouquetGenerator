@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useMemo, useState } from "react";
-import { Check, Download, Film, Share } from "lucide-react";
+import { Check, Download, Film, Flower2, Share } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { BouquetPreview } from "@/components/bouquet/BouquetPreview";
@@ -140,20 +140,32 @@ function ResultPageContent() {
   return (
     <main className="mx-auto max-w-5xl px-4 py-10 md:px-6">
       <div className="overflow-hidden rounded-[32px] border border-white/80 bg-white shadow-[0_10px_50px_rgba(15,23,42,0.08)]">
-        <div className="bg-gradient-to-r from-rose-50 via-white to-orange-50 px-8 py-8">
-          {!isSharedView && (
-            <p className="text-sm font-medium uppercase tracking-[0.3em] text-rose-500">
-              Final bouquet
-            </p>
-          )}
-          <h1 className="mt-2 text-4xl font-semibold tracking-tight">
-            Made with love, wrapped your way
-          </h1>
-          {!isSharedView && (
-            <p className="mt-3 max-w-2xl text-stone-600">
-              A shareable digital bouquet with your chosen flowers, paper, ribbon,
-              and message.
-            </p>
+        <div className="flex items-start justify-between gap-4 bg-gradient-to-r from-rose-50 via-white to-orange-50 px-8 py-8">
+          <div>
+            {!isSharedView && (
+              <p className="text-sm font-medium uppercase tracking-[0.3em] text-rose-500">
+                Final bouquet
+              </p>
+            )}
+            <h1 className="mt-2 text-4xl font-semibold tracking-tight">
+              Made with love, wrapped your way
+            </h1>
+            {!isSharedView && (
+              <p className="mt-3 max-w-2xl text-stone-600">
+                A shareable digital bouquet with your chosen flowers, paper, ribbon,
+                and message.
+              </p>
+            )}
+          </div>
+
+          {isSharedView && (
+            <Link
+              href="/"
+              aria-label="Bouquet Studio home"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-rose-100 text-rose-500"
+            >
+              <Flower2 className="h-5 w-5" />
+            </Link>
           )}
         </div>
 
