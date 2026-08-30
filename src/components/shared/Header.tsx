@@ -2,8 +2,16 @@
 
 import Link from "next/link";
 import { Flower2 } from "lucide-react";
+import { usePathname, useSearchParams } from "next/navigation";
 
 export function Header() {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const isSharedResultView =
+    pathname === "/result" && (searchParams.has("id") || searchParams.has("b"));
+
+  if (isSharedResultView) return null;
+
   return (
     <header className="sticky top-0 z-20 border-b border-white/70 bg-white/70 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 md:px-6">

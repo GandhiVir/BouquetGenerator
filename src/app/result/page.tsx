@@ -157,16 +157,24 @@ function ResultPageContent() {
           )}
         </div>
 
-        <div className="grid gap-8 px-8 py-8 lg:grid-cols-[1.2fr_0.8fr]">
-          <BouquetPreview
-            config={config}
-            flatFlowers={flatFlowers}
-            layout={layout}
-            animated
-          />
+        <div
+          className={
+            isSharedView
+              ? "px-8 py-8"
+              : "grid gap-8 px-8 py-8 lg:grid-cols-[1.2fr_0.8fr]"
+          }
+        >
+          <div className={isSharedView ? "mx-auto max-w-lg" : undefined}>
+            <BouquetPreview
+              config={config}
+              flatFlowers={flatFlowers}
+              layout={layout}
+              animated
+            />
+          </div>
 
-          <div className="flex flex-col justify-center">
-            {!isSharedView && (
+          {!isSharedView && (
+            <div className="flex flex-col justify-center">
               <div className="rounded-[28px] border border-stone-200 bg-stone-50 p-6">
                 <p className="text-sm font-medium uppercase tracking-[0.25em] text-stone-500">
                   Details
@@ -195,53 +203,49 @@ function ResultPageContent() {
                   />
                 </dl>
               </div>
-            )}
 
-            <div className="mt-6 flex flex-wrap gap-3">
-              <button
-                onClick={handleShare}
-                className="inline-flex items-center gap-2 rounded-full bg-rose-500 px-5 py-3 text-sm font-medium text-white hover:bg-rose-600"
-              >
-                {copied ? (
-                  <Check className="h-4 w-4" />
-                ) : (
-                  <Share className="h-4 w-4" />
-                )}
-                {copied ? "Link copied" : "Share link"}
-              </button>
-              <button
-                onClick={handleDownloadStatic}
-                className="inline-flex items-center gap-2 rounded-full bg-stone-900 px-5 py-3 text-sm font-medium text-white"
-              >
-                <Download className="h-4 w-4" />
-                Download SVG
-              </button>
-              <button
-                onClick={handleDownloadAnimated}
-                className="inline-flex items-center gap-2 rounded-full border border-stone-200 px-5 py-3 text-sm font-medium hover:bg-stone-50"
-              >
-                <Film className="h-4 w-4" />
-                Download animated
-              </button>
-              {!isSharedView && (
-                <>
-                  <Link
-                    href="/builder"
-                    className="rounded-full border border-stone-200 px-5 py-3 text-sm font-medium"
-                  >
-                    Edit bouquet
-                  </Link>
-                  <Link
-                    href="/builder"
-                    onClick={() => resetConfig()}
-                    className="rounded-full border border-stone-200 px-5 py-3 text-sm font-medium"
-                  >
-                    Create another
-                  </Link>
-                </>
-              )}
+              <div className="mt-6 flex flex-wrap gap-3">
+                <button
+                  onClick={handleShare}
+                  className="inline-flex items-center gap-2 rounded-full bg-rose-500 px-5 py-3 text-sm font-medium text-white hover:bg-rose-600"
+                >
+                  {copied ? (
+                    <Check className="h-4 w-4" />
+                  ) : (
+                    <Share className="h-4 w-4" />
+                  )}
+                  {copied ? "Link copied" : "Share link"}
+                </button>
+                <button
+                  onClick={handleDownloadStatic}
+                  className="inline-flex items-center gap-2 rounded-full bg-stone-900 px-5 py-3 text-sm font-medium text-white"
+                >
+                  <Download className="h-4 w-4" />
+                  Download SVG
+                </button>
+                <button
+                  onClick={handleDownloadAnimated}
+                  className="inline-flex items-center gap-2 rounded-full border border-stone-200 px-5 py-3 text-sm font-medium hover:bg-stone-50"
+                >
+                  <Film className="h-4 w-4" />
+                  Download animated
+                </button>
+                <Link
+                  href="/builder"
+                  className="rounded-full border border-stone-200 px-5 py-3 text-sm font-medium"
+                >
+                  Edit bouquet
+                </Link>
+                <Link
+                  href="/builder"
+                  onClick={() => resetConfig()}
+                  className="rounded-full border border-stone-200 px-5 py-3 text-sm font-medium"
+                >
+                  Create another
+                </Link>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </main>
