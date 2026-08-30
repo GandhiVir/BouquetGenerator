@@ -77,5 +77,5 @@ export const DEFAULT_CONFIG: BouquetConfig = {
   message: "Wishing you a day as beautiful as these flowers.",
   senderName: "From me",
   flowerStyle: "classic",
-  songUrl: "",
+  songUrl: "https://open.spotify.com/track/74RjCYWXEq02lyMumMTKDI?si=a2faed000f884ec5",
 };

@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Check, Download, Film, Flower2, Gift, Palette, RotateCcw, Ruler, Share, Shuffle } from "lucide-react";
+import { Check, Download, Film, Flower2, Gift, Music, Palette, RotateCcw, Ruler, Share, Shuffle } from "lucide-react";
 import { BouquetPreview } from "@/components/bouquet/BouquetPreview";
 import { ColorSwatches } from "@/components/controls/ControlSwatches";
 import { ControlRow } from "@/components/controls/ControlRow";
@@ -203,54 +203,66 @@ export default function BuilderPage() {
                   className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 shadow-sm outline-none"
                 />
               </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-medium text-stone-700">Song (optional)</label>
-                <input
-                  value={config.songUrl ?? ""}
-                  onChange={(e) => updateField('songUrl', e.target.value)}
-                  placeholder="Paste a Spotify song link"
-                  className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 shadow-sm outline-none"
-                />
-                {config.songUrl && !getSpotifyEmbedUrl(config.songUrl) && (
-                  <p className="mt-2 text-sm text-rose-500">
-                    That doesn&apos;t look like a Spotify song link.
-                  </p>
-                )}
-              </div>
             </div>
+          </SectionCard>
+
+          <SectionCard title="Song" icon={<Music className="h-4 w-4" />}>
+            <label className="mb-2 block text-sm font-medium text-stone-700">Spotify link (optional)</label>
+            <input
+              value={config.songUrl ?? ""}
+              onChange={(e) => updateField('songUrl', e.target.value)}
+              placeholder="Paste a Spotify song link"
+              className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 shadow-sm outline-none"
+            />
+            {config.songUrl && !getSpotifyEmbedUrl(config.songUrl) && (
+              <p className="mt-2 text-sm text-rose-500">
+                That doesn&apos;t look like a Spotify song link.
+              </p>
+            )}
           </SectionCard>
         </div>
 
         <div className="space-y-6">
           <div className="rounded-[28px] border border-white/70 bg-white/90 p-5 shadow-[0_10px_40px_rgba(15,23,42,0.06)] backdrop-blur">
-            <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <p className="text-sm font-medium uppercase tracking-[0.25em] text-rose-500">Live preview</p>
                 <h2 className="mt-1 text-2xl font-semibold">Your digital bouquet</h2>
               </div>
               <div className="flex flex-wrap gap-2">
-                <button onClick={reshuffle} className="inline-flex items-center gap-2 rounded-full border border-stone-200 px-4 py-2 text-sm font-medium hover:bg-stone-50">
-                  <Shuffle className="h-4 w-4" />
-                  Reshuffle
-                </button>
-                <button onClick={resetConfig} className="inline-flex items-center gap-2 rounded-full border border-stone-200 px-4 py-2 text-sm font-medium hover:bg-stone-50">
-                  <RotateCcw className="h-4 w-4" />
-                  Reset
-                </button>
-                <button onClick={handleShare} className="inline-flex items-center gap-2 rounded-full border border-stone-200 px-4 py-2 text-sm font-medium hover:bg-stone-50">
-                  {copied ? <Check className="h-4 w-4" /> : <Share className="h-4 w-4" />}
-                  {copied ? "Link copied" : "Share link"}
-                </button>
-                <button onClick={handleDownloadAnimated} className="inline-flex items-center gap-2 rounded-full border border-stone-200 px-4 py-2 text-sm font-medium hover:bg-stone-50">
-                  <Film className="h-4 w-4" />
-                  Animated
-                </button>
-                <button onClick={handleDownloadStatic} className="inline-flex items-center gap-2 rounded-full bg-stone-900 px-4 py-2 text-sm font-medium text-white hover:bg-stone-800">
+                <button
+                  onClick={handleDownloadStatic}
+                  title="Download SVG"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-stone-200 hover:bg-stone-50"
+                >
                   <Download className="h-4 w-4" />
-                  Download
+                </button>
+                <button
+                  onClick={handleDownloadAnimated}
+                  title="Download animated"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-stone-200 hover:bg-stone-50"
+                >
+                  <Film className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={handleShare}
+                  title={copied ? "Link copied" : "Share link"}
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-stone-900 text-white hover:bg-stone-800"
+                >
+                  {copied ? <Check className="h-4 w-4" /> : <Share className="h-4 w-4" />}
                 </button>
               </div>
+            </div>
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button onClick={reshuffle} className="inline-flex items-center gap-2 rounded-full border border-stone-200 px-4 py-2 text-sm font-medium hover:bg-stone-50">
+                <Shuffle className="h-4 w-4" />
+                Reshuffle
+              </button>
+              <button onClick={resetConfig} className="inline-flex items-center gap-2 rounded-full border border-stone-200 px-4 py-2 text-sm font-medium hover:bg-stone-50">
+                <RotateCcw className="h-4 w-4" />
+                Reset
+              </button>
             </div>
 
             <div className="mt-5">
