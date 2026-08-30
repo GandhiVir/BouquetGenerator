@@ -2,6 +2,7 @@
 
 import { RIBBONS, WRAPS } from "@/data/bouquetOptions";
 import { getFlowerMeta } from "@/lib/bouquet";
+import { getSpotifyEmbedUrl } from "@/lib/spotify";
 import type { BouquetConfig, FlatFlower, LayoutItem } from "@/types/bouquet";
 import { FlowerHead } from "./FlowerHead";
 import { RibbonSvg } from "./RibbonSvg";
@@ -145,6 +146,8 @@ export function BouquetPreview({
   layout: LayoutItem[];
   animated?: boolean;
 }) {
+  const spotifyEmbedUrl = getSpotifyEmbedUrl(config.songUrl);
+
   return (
     <div className="rounded-[28px] bg-[linear-gradient(180deg,#fffdfa_0%,#f8efe8_100%)] p-4 md:p-6">
       <div className="mx-auto max-w-[480px] rounded-[28px] bg-white/60 p-3 shadow-inner">
@@ -172,6 +175,20 @@ export function BouquetPreview({
           — {config.senderName || "Anonymous"}
         </p>
       </div>
+
+      {spotifyEmbedUrl && (
+        <div className="mx-auto mt-4 max-w-md overflow-hidden rounded-2xl shadow-sm">
+          <iframe
+            src={spotifyEmbedUrl}
+            width="100%"
+            height="152"
+            style={{ border: 0 }}
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy"
+            title="Spotify song"
+          />
+        </div>
+      )}
     </div>
   );
 }

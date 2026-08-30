@@ -23,6 +23,7 @@ import { flattenFlowers, getLayout, shuffleFlowers } from "@/lib/bouquet";
 import { downloadSvgMarkup } from "@/lib/download";
 import { buildBouquetSvgMarkup } from "@/lib/exportSvg";
 import { createShareUrl } from "@/lib/shareApi";
+import { getSpotifyEmbedUrl } from "@/lib/spotify";
 import { useBouquetStore } from "@/store/bouquetStore";
 import type {
   BouquetSize,
@@ -201,6 +202,21 @@ export default function BuilderPage() {
                   onChange={(e) => updateField('senderName', e.target.value)}
                   className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 shadow-sm outline-none"
                 />
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-stone-700">Song (optional)</label>
+                <input
+                  value={config.songUrl ?? ""}
+                  onChange={(e) => updateField('songUrl', e.target.value)}
+                  placeholder="Paste a Spotify song link"
+                  className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 shadow-sm outline-none"
+                />
+                {config.songUrl && !getSpotifyEmbedUrl(config.songUrl) && (
+                  <p className="mt-2 text-sm text-rose-500">
+                    That doesn&apos;t look like a Spotify song link.
+                  </p>
+                )}
               </div>
             </div>
           </SectionCard>

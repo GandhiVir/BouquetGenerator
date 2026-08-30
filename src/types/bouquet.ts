@@ -21,6 +21,7 @@ export type BouquetConfig = {
   message: string;
   senderName: string;
   flowerStyle: FlowerRenderStyle;
+  songUrl: string;
 };
 
 export type FlatFlower = {
