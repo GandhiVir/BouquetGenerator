@@ -10,24 +10,54 @@ import { RIBBONS, WRAPS } from "@/data/bouquetOptions";
 import { flattenFlowers, getLayout, shuffleFlowers } from "@/lib/bouquet";
 import { downloadSvgMarkup } from "@/lib/download";
 import { buildBouquetSvgMarkup } from "@/lib/exportSvg";
-import { decodeShareState, encodeShareState } from "@/lib/shareLink";
+import { createShareUrl } from "@/lib/shareApi";
+import { decodeShareState, type SharePayload } from "@/lib/shareLink";
 import { useBouquetStore } from "@/store/bouquetStore";
 
 function ResultPageContent() {
   const searchParams = useSearchParams();
-  const sharedParam = searchParams.get("b");
-  const decodedShared = useMemo(
-    () => (sharedParam ? decodeShareState(sharedParam) : null),
-    [sharedParam],
+  const idParam = searchParams.get("id");
+  const bParam = searchParams.get("b");
+  const isSharedView = !!idParam || !!bParam;
+
+  const decodedFromB = useMemo(
+    () => (bParam ? decodeShareState(bParam) : null),
+    [bParam],
   );
-  const isSharedView = !!decodedShared;
 
   const { config, resetConfig, shuffleSeed, hydrateShared } = useBouquetStore();
   const [copied, setCopied] = useState(false);
+  const [fetchStatus, setFetchStatus] = useState<"idle" | "loading" | "error">(
+    idParam ? "loading" : "idle",
+  );
 
   useEffect(() => {
-    if (decodedShared) hydrateShared(decodedShared.config, decodedShared.shuffleSeed);
-  }, [decodedShared, hydrateShared]);
+    if (decodedFromB) hydrateShared(decodedFromB.config, decodedFromB.shuffleSeed);
+  }, [decodedFromB, hydrateShared]);
+
+  useEffect(() => {
+    if (!idParam) return;
+    let cancelled = false;
+    setFetchStatus("loading");
+
+    fetch(`/api/bouquets/${idParam}`)
+      .then((response) => {
+        if (!response.ok) throw new Error("not found");
+        return response.json() as Promise<SharePayload>;
+      })
+      .then((data) => {
+        if (cancelled) return;
+        hydrateShared(data.config, data.shuffleSeed);
+        setFetchStatus("idle");
+      })
+      .catch(() => {
+        if (!cancelled) setFetchStatus("error");
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [idParam, hydrateShared]);
 
   const maxFlowers =
     config.size === "small" ? 8 : config.size === "medium" ? 12 : 18;
@@ -49,9 +79,7 @@ function ResultPageContent() {
   );
 
   const handleShare = async () => {
-    const url = `${window.location.origin}/result?b=${encodeURIComponent(
-      encodeShareState(config, shuffleSeed),
-    )}`;
+    const url = await createShareUrl(config, shuffleSeed);
 
     if (navigator.share) {
       try {
@@ -80,6 +108,34 @@ function ResultPageContent() {
     const markup = buildBouquetSvgMarkup(config, flatFlowers, layout, false);
     downloadSvgMarkup(markup, "digital-bouquet.svg");
   };
+
+  if (idParam && fetchStatus === "loading") {
+    return (
+      <main className="mx-auto max-w-5xl px-4 py-24 text-center">
+        <p className="text-stone-500">Loading your bouquet…</p>
+      </main>
+    );
+  }
+
+  if (idParam && fetchStatus === "error") {
+    return (
+      <main className="mx-auto max-w-lg px-4 py-24 text-center">
+        <h1 className="text-2xl font-semibold text-stone-900">
+          This bouquet couldn&apos;t be found
+        </h1>
+        <p className="mt-3 text-stone-600">
+          The link may have expired (shared bouquets are kept for 14 days) or
+          no longer exists.
+        </p>
+        <Link
+          href="/builder"
+          className="mt-6 inline-flex rounded-full bg-stone-900 px-5 py-3 text-sm font-medium text-white"
+        >
+          Build your own bouquet
+        </Link>
+      </main>
+    );
+  }
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-10 md:px-6">
