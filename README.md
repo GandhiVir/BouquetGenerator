@@ -6,6 +6,7 @@ Pick your flowers, shape the arrangement, wrap it your way, and attach a persona
 
 **[Try it live → bouquetgenerator.netlify.app](https://bouquetgenerator.netlify.app)**
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/e280df04-9614-40c9-9adc-f46e3ba8bf7d/deploy-status)](https://app.netlify.com/projects/bouquetgenerator/deploys)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org)
 [![React](https://img.shields.io/badge/React-19-149eca?logo=react)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
