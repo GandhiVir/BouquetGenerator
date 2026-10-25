@@ -1,3 +1,7 @@
+
+
+https://github.com/user-attachments/assets/887e93a2-a74d-4cd1-ba3a-afb79ddd1161
+
 <img src="docs/hero.svg" alt="Row of illustrated flowers — rose, tulip, sunflower, lily, and daisy" width="100%" />
 
 # Bouquet Studio
